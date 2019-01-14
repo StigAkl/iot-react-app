@@ -37,7 +37,7 @@ const sensors = [{
 },
 ];
 
-// enhance your app security with Helmet
+// enhance app security
 app.use(helmet());
 
 // use bodyParser to parse application/json content-type
@@ -49,7 +49,7 @@ app.use(cors());
 // log HTTP requests
 app.use(morgan('combined'));
 
-// retrieve all questions
+// retrieve all sensors
 app.get('/', (req, res) => {
   const sensors_map = sensors.map(s => ({
     id: s.id,
@@ -60,13 +60,20 @@ app.get('/', (req, res) => {
   res.send(sensors_map);
 });
 
-// get a specific question
+// get a specific sensor
 app.get('/:id', (req, res) => {
   const sensor = sensors.filter(s => (s.id === parseInt(req.params.id)));
   if (sensor.length > 1) return res.status(500).send();
   if (sensor.length === 0) return res.status(404).send();
   res.send(sensor[0]);
 });
+
+
+/* 
+TODO
+- Add new sensors through API 
+- Replace dummy database with real database
+*/
 
 // start the server
 app.listen(8081, () => {
