@@ -15,12 +15,15 @@ class App extends Component {
       this.setState({
         data: res.data
       })
-      console.log(this.state)
     })
   }
 
   addSensor = (name) => {
-    const id = this.state.data ? this.state.data[this.state.data.length-1] +1 : 1;
+
+    if (name === "" || name === undefined) {
+      return; 
+    }
+    const id = this.state.data ? this.state.data[this.state.data.length-1].id +1 : 1;
     let temp = ((Math.random() * 30.0) - 10).toFixed(2);  
     let humidity = Math.floor(Math.random()*100); 
 
@@ -54,10 +57,8 @@ class App extends Component {
                   {(index+1) % 3 === 0 && index > 0 && <div className="w-100"></div>}
               </React.Fragment>
             )
-
-          
         })}
-      </div>
+        </div>
       </div>
     ) : (<p>Ingen data..</p>)
     return (
