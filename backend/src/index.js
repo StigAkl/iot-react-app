@@ -6,9 +6,110 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const admin = require('firebase-admin');
+const serviceAccount = require('./adminsdk-key.json'); 
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+})
+
+const db = admin.firestore(); 
+
+function getRandomRecord() {
+  let temp = ((Math.random() * 30.0) - 10).toFixed(2);  
+  let humidity = Math.floor(Math.random()*100); 
+
+  let record = {
+    id: Math.random(), 
+    name: "Bedroom",
+    temp: temp, 
+    humidity: humidity
+  }
+
+  return record; 
+
+}
+
+function updateDb(record) {
+  db.collection('records').doc("current_record").set(record).then(() => {
+    console.log("Record set..")
+  })
+}
+setInterval(() => {
+  let record = {
+    id: 1, 
+    name: "Bedroom", 
+    temp: (Math.random()*30 - Math.random()*20).toFixed(2),
+    humidity: (Math.random()*60 - Math.random()*40).toFixed(2)
+  }
+
+  updateDb(record); 
+}, 2000); 
 
 // define the Express app
 const app = express();
+
+// enhance app security
+app.use(helmet());
+
+// use bodyParser to parse application/json content-type
+app.use(bodyParser.json());
+
+// enable all CORS requests
+app.use(cors());
+
+// log HTTP requests
+app.use(morgan('combined'));
+
+// retrieve all sensors
+app.get('/current', (req, res) => {
+  let sensors = []
+  db.collection('records').doc('current_record').get().then((doc) => {
+   data = doc.data()
+   sensors.push({
+     "id": data.id,
+     "name": data.name,
+     "temp": data.temp,
+     "humidity": data.humidity
+   })
+
+   res.send(sensors); 
+  })
+})
+
+  
+
+/* 
+TODO
+- Add new sensors through API 
+- Replace dummy database with real database
+*/
+
+// start the server
+app.listen(8081, () => {
+  console.log('listening on port 8081');
+}); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // the database
 const sensors = [{
@@ -36,46 +137,3 @@ const sensors = [{
   humidity: "34"
 },
 ];
-
-// enhance app security
-app.use(helmet());
-
-// use bodyParser to parse application/json content-type
-app.use(bodyParser.json());
-
-// enable all CORS requests
-app.use(cors());
-
-// log HTTP requests
-app.use(morgan('combined'));
-
-// retrieve all sensors
-app.get('/', (req, res) => {
-  const sensors_map = sensors.map(s => ({
-    id: s.id,
-    name: s.name,
-    temp: s.temp,
-    humidity: s.humidity,
-  }));
-  res.send(sensors_map);
-});
-
-// get a specific sensor
-app.get('/:id', (req, res) => {
-  const sensor = sensors.filter(s => (s.id === parseInt(req.params.id)));
-  if (sensor.length > 1) return res.status(500).send();
-  if (sensor.length === 0) return res.status(404).send();
-  res.send(sensor[0]);
-});
-
-
-/* 
-TODO
-- Add new sensors through API 
-- Replace dummy database with real database
-*/
-
-// start the server
-app.listen(8081, () => {
-  console.log('listening on port 8081');
-});

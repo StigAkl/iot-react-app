@@ -30,11 +30,13 @@ class NewSensor extends Component {
         return (
         <React.Fragment>        
         <form onSubmit={this.handleSubmit}>
+        <div className="Top-margin">
         <div className="input-group mb-2">
         <div className="input-group-prepend">
             <button className="btn btn-outline-secondary" onClick={this.handleSubmit} type="button">Add new sensor</button>
         </div>
         <input type="text" className="form-control" onChange={this.handleChange} placeholder="Name" value={this.state.name} aria-describedby="basic-addon1" />
+        </div>
         </div>
         </form>
         </React.Fragment>
