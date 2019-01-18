@@ -9,11 +9,14 @@ const morgan = require('morgan');
 const admin = require('firebase-admin');
 const serviceAccount = require('./adminsdk-key.json'); 
 
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
 const db = admin.firestore(); 
+db.settings({ timestampsInSnapshots: true })
+
 
 function getRandomRecord() {
   let temp = ((Math.random() * 30.0) - 10).toFixed(2);  
@@ -32,7 +35,7 @@ function getRandomRecord() {
 
 function updateDb(record) {
   db.collection('records').doc("current_record").set(record).then(() => {
-    console.log("Record set..")
+    //console.log("Record set..")
   })
 }
 setInterval(() => {
@@ -63,6 +66,7 @@ app.use(morgan('combined'));
 
 // retrieve all sensors
 app.get('/current', (req, res) => {
+  console.log(req); 
   let sensors = []
   db.collection('records').doc('current_record').get().then((doc) => {
    data = doc.data()
@@ -76,7 +80,6 @@ app.get('/current', (req, res) => {
    res.send(sensors); 
   })
 })
-
   
 
 /* 

@@ -27,6 +27,10 @@ class App extends Component {
         loading: false,
         data: res.data
       })
+    }).catch(error => {
+      this.setState({
+        loading: false
+      })
     })
   }
 
@@ -79,9 +83,8 @@ class App extends Component {
       <div className="App">
         <div className="container">
           {this.state.loading ? (
-          <div class="text-center">
-          <div class="spinner-border Top-margin" role="status">
-            <span class="sr-only">Loading...</span>
+          <div className="text-center">
+          <div className="spinner-border Top-margin" role="status">
           </div>
         </div>)
         : (<p>{sensorList}</p>)}
