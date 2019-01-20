@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const admin = require('firebase-admin');
 const serviceAccount = require('./adminsdk-key.json'); 
 
+const PORT = process.env.PORT || 5000
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -17,21 +18,6 @@ admin.initializeApp({
 const db = admin.firestore(); 
 db.settings({ timestampsInSnapshots: true })
 
-
-function getRandomRecord() {
-  let temp = ((Math.random() * 30.0) - 10).toFixed(2);  
-  let humidity = Math.floor(Math.random()*100); 
-
-  let record = {
-    id: Math.random(), 
-    name: "Bedroom",
-    temp: temp, 
-    humidity: humidity
-  }
-
-  return record; 
-
-}
 
 function updateDb(record) {
   db.collection('records').doc("current_record").set(record).then(() => {
@@ -49,6 +35,26 @@ setInterval(() => {
   updateDb(record); 
 }, 2000); 
 
+
+function bedtest() {
+  let data = {
+    name: "Kitchenn", 
+    temp: 23
+  }
+
+  //db.collection('current_records').doc().set(data);  
+ 
+}
+
+function pushData(data) {
+  db.collection('current_records').doc(data.name).get().then((snapshot) => {
+    if (snapshot.exists) {
+      console.log("Exists"); 
+      db.collection('current_records').doc(data.name).set(data)
+    }
+  })
+}
+
 // define the Express app
 const app = express();
 
@@ -63,6 +69,17 @@ app.use(cors());
 
 // log HTTP requests
 app.use(morgan('combined'));
+
+app.get('/', (req, res) => {
+  let data = {
+    name: "Bedroom", 
+    temp: 25,
+    humidity: 50
+  }
+
+  pushData(data); 
+})
+
 
 // retrieve all sensors
 app.get('/current', (req, res) => {
@@ -89,7 +106,7 @@ TODO
 */
 
 // start the server
-app.listen(8081, () => {
+app.listen(PORT, () => {
   console.log('listening on port 8081');
 }); 
 
