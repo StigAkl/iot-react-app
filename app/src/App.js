@@ -13,6 +13,8 @@ class App extends Component {
 
   componentDidMount() {
  
+    this.setData(); 
+    
     setInterval(() => {
 
       this.setData(); 
@@ -21,7 +23,7 @@ class App extends Component {
   }
 
   setData() {
-    axios.get("http://localhost:8081/current").then(res => {
+    axios.get("https://limitless-mesa-30279.herokuapp.com/current").then(res => {
       console.log(res.data.data);
       this.setState({
         loading: false,
