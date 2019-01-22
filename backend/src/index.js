@@ -74,12 +74,6 @@ app.use(morgan('combined'));
 
 
 
-
-
-
-
-
-
 app.get('/', (req, res) => {
   db.collection('current_records').get().then((snapShot)=> {
     snapShot.docs.map(doc => {
