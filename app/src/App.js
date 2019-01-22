@@ -19,7 +19,7 @@ class App extends Component {
 
       this.setData(); 
 
-    }, 2000)
+    }, 2000000)
   }
 
   setData() {
