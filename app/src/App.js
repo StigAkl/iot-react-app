@@ -42,7 +42,7 @@ class App extends Component {
         {sensors.map((sensor, index) => {
             return (
               <React.Fragment key={index}>
-                  <Sensor sensor={sensor} sensor_class="normal" key={index} />
+                  <Sensor sensor={sensor} sensor_class="cold" key={index} />
                   {(index+1) % 3 === 0 && index > 0 && !this.state.loading && <div className="w-100"></div>}
               </React.Fragment>
             )
