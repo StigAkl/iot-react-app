@@ -4,9 +4,6 @@ const Sensor = (props) => {
 
     const {sensor} = props; 
     const { sensor_class } = props; 
- 
-    sensor.humidity = 34.5;
- 
 
     let className = sensor_class === "normal" ? "data-box normal" : (
         sensor_class === "cold" ? "data-box cold" : "data-box hot"
