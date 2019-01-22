@@ -11,6 +11,8 @@ const serviceAccount = require('./adminsdk-key.json');
 
 const PORT = process.env.PORT || 5000
 
+let sensors = []; 
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
@@ -70,14 +72,28 @@ app.use(cors());
 // log HTTP requests
 app.use(morgan('combined'));
 
-app.get('/', (req, res) => {
-  let data = {
-    name: "Bedroom", 
-    temp: 25,
-    humidity: 50
-  }
 
-  pushData(data); 
+
+
+
+
+
+
+
+app.get('/', (req, res) => {
+  db.collection('current_records').get().then((snapShot)=> {
+    snapShot.docs.map(doc => {
+      let sensor = doc.data(); 
+      sensor.average_temperature = 50; 
+      sensors.push(sensor)
+    })
+
+      res.send(sensors);
+      
+      sensors = []; 
+  }) 
+
+
 })
 
 
@@ -107,53 +123,5 @@ TODO
 
 // start the server
 app.listen(PORT, () => {
-  console.log('listening on port 8081');
+  console.log('listening on port ' + PORT);
 }); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// the database
-const sensors = [{
-  id: 1,
-  name: "Bedroom", 
-  temp: "24.5",
-  humidity: "39"
-},
-{
-  id: 2,
-  name: "Outdoor", 
-  temp: "-2.4",
-  humidity: "65"
-},
-{
-  id: 3,
-  name: "Kitchen", 
-  temp: "22.4",
-  humidity: "45"
-},
-{
-  id: 4,
-  name: "Livingroom", 
-  temp: "21.8",
-  humidity: "34"
-},
-];

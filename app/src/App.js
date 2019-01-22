@@ -22,7 +22,9 @@ class App extends Component {
   }
 
   setData() {
-    axios.get("https://limitless-mesa-30279.herokuapp.com/current").then(res => {
+
+    let localhost = "http://localhost:5000/"
+    axios.get(localhost).then(res => {
       this.setState({
         loading: false,
         data: res.data
@@ -36,13 +38,15 @@ class App extends Component {
 
 
   render() {
+    let themes = ['normal', 'cold', 'hot']; 
+
     const sensors = this.state.data; 
     const sensorList = sensors.length ? (
         <div className="row">
         {sensors.map((sensor, index) => {
             return (
               <React.Fragment key={index}>
-                  <Sensor sensor={sensor} sensor_class="cold" key={index} />
+                  <Sensor sensor={sensor} sensor_class={themes[index % (themes.length)]} key={index} />
                   {(index+1) % 3 === 0 && index > 0 && !this.state.loading && <div className="w-100"></div>}
               </React.Fragment>
             )
