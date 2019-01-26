@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Sensor from './Components/Sensor'
-import NewSensor from './Components/NewSensor'
 
 class App extends Component {
 
@@ -18,7 +17,7 @@ class App extends Component {
 
       this.setData(); 
 
-    }, 2000000)
+    }, 60000*5)
   }
 
   setData() {

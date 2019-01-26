@@ -21,38 +21,15 @@ const db = admin.firestore();
 db.settings({ timestampsInSnapshots: true })
 
 
-function updateDb(record) {
-  db.collection('records').doc("current_record").set(record).then(() => {
-    //console.log("Record set..")
-  })
-}
-setInterval(() => {
-  let record = {
-    id: 1, 
-    name: "Bedroom", 
-    temp: (Math.random()*30 - Math.random()*20).toFixed(2),
-    humidity: (Math.random()*60 - Math.random()*40).toFixed(2)
-  }
+function updateDb(record, res) {
 
-  updateDb(record); 
-}, 2000); 
-
-
-function bedtest() {
-  let data = {
-    name: "Kitchenn", 
-    temp: 23
-  }
-
-  //db.collection('current_records').doc().set(data);  
- 
-}
-
-function pushData(data) {
-  db.collection('current_records').doc(data.name).get().then((snapshot) => {
+  db.collection('current_records').doc(record.name).get().then((snapshot) => {
     if (snapshot.exists) {
-      console.log("Exists"); 
-      db.collection('current_records').doc(data.name).set(data)
+      db.collection('current_records').doc(record.name).update(record)
+      res.send("200 OK"); 
+    } else {
+      res.statusCode = 404; 
+      res.send("404 not found")
     }
   })
 }
@@ -107,6 +84,20 @@ app.get('/current', (req, res) => {
    res.send(sensors); 
   })
 })
+
+app.get('/api/put/:name/:temp/:humidity', (req, res) => {
+  let temp = req.params.temp; 
+  let name = firstToUppercase(req.params.name); 
+  let humidity = req.params.humidity; 
+
+  let object = {
+    temp: temp, 
+    name: name, 
+    humidity: humidity, 
+  }
+
+  updateDb(object, res); 
+})
   
 
 /* 
@@ -119,3 +110,7 @@ TODO
 app.listen(PORT, () => {
   console.log('listening on port ' + PORT);
 }); 
+
+function firstToUppercase(name) {
+  return name.charAt(0).toUpperCase()+ name.slice(1); 
+}
