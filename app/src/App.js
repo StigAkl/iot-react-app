@@ -24,7 +24,8 @@ class App extends Component {
   setData() {
 
     let localhost = "http://localhost:5000/"
-    axios.get(localhost).then(res => {
+    let heroku_host = "https://limitless-mesa-30279.herokuapp.com"
+    axios.get(heroku_host).then(res => {
       this.setState({
         loading: false,
         data: res.data
