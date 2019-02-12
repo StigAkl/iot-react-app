@@ -21,11 +21,12 @@ const Statistics = (props) => {
         <li className="title">Høyeste Luftfuktighet målt: <span className="stat-data"> {sensor.highest_humidity_all_time}%</span></li>
     </ul>
 
-    */}
+    
 
     <ul className="statistics">
     <li>Ikke implementert enda</li>
     </ul>
+    */}
 </div> 
 
 )
