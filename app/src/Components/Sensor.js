@@ -5,6 +5,14 @@ const Sensor = (props) => {
 
     const {sensor} = props; 
     const { sensor_class } = props; 
+    const { average_temp } = props;
+
+    let avg_temp = ""
+    average_temp.map(temp => {
+        if(temp.name == sensor.name) {
+            avg_temp = temp;
+        }
+    })
 
     let className = sensor_class === "normal" ? "data-box normal" : (
         sensor_class === "cold" ? "data-box cold" : "data-box hot"
@@ -22,7 +30,7 @@ const Sensor = (props) => {
 
     return (
         <React.Fragment>
-        <div className="col-md-4">
+        <div className="col-4">
             <div className={className}>
                 <h4 className="location-title">{sensor.name}</h4>
                 <hr/>
@@ -36,7 +44,7 @@ const Sensor = (props) => {
                     <br />
 
 
-                <Statistics sensor={sensor} />
+                <Statistics sensor={sensor} average_temp={avg_temp.average_temperature} />
             </div>
         </div>
         </React.Fragment>

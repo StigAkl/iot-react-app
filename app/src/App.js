@@ -6,18 +6,21 @@ class App extends Component {
 
   state = {
     loading: true, 
-    data: []
+    data: [],
+    average_temp: []
   }
 
   componentDidMount() {
  
     this.setData(); 
-    
+    this.fetchAverageTemps(); 
+
     setInterval(() => {
 
       this.setData(); 
+      this.fetchAverageTemps(); 
 
-    }, 60000*5)
+    }, 1000*60*2)
   }
 
   setData() {
@@ -26,8 +29,8 @@ class App extends Component {
     let heroku_host = "https://limitless-mesa-30279.herokuapp.com"
     axios.get(heroku_host).then(res => {
       this.setState({
-        loading: false,
-        data: res.data
+        data: res.data,
+        loading: false
       })
     }).catch(error => {
       this.setState({
@@ -36,6 +39,17 @@ class App extends Component {
     })
   }
 
+  fetchAverageTemps(data) {
+    console.log("fetching..")
+    let endpoint = "https://limitless-mesa-30279.herokuapp.com/api/average/temp/";
+      axios.get(endpoint).then(res => {
+         this.setState({
+           average_temp: res.data
+         })
+
+         console.log(this.state)
+      })
+}
 
   render() {
     let themes = ['normal', 'cold', 'hot']; 
@@ -46,7 +60,7 @@ class App extends Component {
         {sensors.map((sensor, index) => {
             return (
               <React.Fragment key={index}>
-                  <Sensor sensor={sensor} sensor_class={themes[index % (themes.length)]} key={index} />
+                  <Sensor sensor={sensor} average_temp={this.state.average_temp} sensor_class={themes[index % (themes.length)]} key={index} />
                   {(index+1) % 3 === 0 && index > 0 && !this.state.loading && <div className="w-100"></div>}
               </React.Fragment>
             )
@@ -63,7 +77,7 @@ class App extends Component {
             <p>Temperatur og Luftfuktighet</p>
         </div>
 
-        <div className="container">
+        <div className="container-fluid">
           {this.state.loading ? (
           <div className="text-center">
           <div className="spinner-border Top-margin" role="status"></div>
