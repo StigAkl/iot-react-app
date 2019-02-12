@@ -96,10 +96,9 @@ app.get('/api/average/temp/', (req, res) => {
 
         records.docs.map(rec => {
           let rec_data = rec.data(); 
-          console.log(new Date().setHours(0,0,0,0))
           if(rec_data.name === data.name && rec_data.today === new Date().setHours(0,0,0,0)){
             sum += parseFloat(rec_data.temp); 
-            count+= 1; 
+            count+=1; 
           }
         })
 
